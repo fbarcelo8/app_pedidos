@@ -1,6 +1,6 @@
+setuptools>=58.0.0
+wheel
 openpyxl==3.0.10
 pandas==2.0.3
 Pillow==10.0.0
 streamlit==1.39.0
-setuptools>=58.0.0
-numpy==1.23.5
