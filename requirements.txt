@@ -245,10 +245,6 @@ pylint
 pylint-venv
 pyls-spyder==0.4.0
 pymdown-extensions==10.11.2
-pyobjc-core
-pyobjc-framework-Cocoa
-pyobjc-framework-CoreServices
-pyobjc-framework-FSEvents
 pyodbc
 pyOpenSSL
 pyparsing
