@@ -54,6 +54,16 @@ def procesar_pedido(pedido_df):
         pedido_filtrado.loc[:, 'Empleado'] = pedido_filtrado['Empleado'].fillna(aeropuerto)
         pedido_filtrado.loc[:, 'Bulk?'] = pedido_filtrado['Empleado'].apply(lambda x: 1 if 'BULK' in str(x).upper() else 0)
     
+    # Verificar si existe la columna 'Talla'
+    if 'Talla' not in pedido_filtrado.columns:
+        # Extraer la información de la talla desde la columna 'Descripción'
+        pedido_filtrado['Talla'] = pedido_filtrado['Descripción'].str.extract(r'T\.(\w+)', expand=False)
+        
+        # Si no se encuentra 'T.', buscar un número de dos dígitos
+        pedido_filtrado['Talla'] = pedido_filtrado['Talla'].fillna(
+            pedido_filtrado['Descripción'].str.extract(r'(\b\d{2}\b)', expand=False)
+        )
+    
     return pedido_filtrado
 
 def procesar_pedidos(lista_archivos):
