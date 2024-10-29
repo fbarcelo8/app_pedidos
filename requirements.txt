@@ -60,7 +60,7 @@ cytoolz
 dask
 datasets
 datashader
-datashape==0.5.4
+datashape==0.5.2
 debugpy
 decorator
 defusedxml
