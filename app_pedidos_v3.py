@@ -253,7 +253,7 @@ def main():
     else:
         aplicar_imagenes_y_formato()
         st.title("Procesamiento de Pedidos")
-        st.success(f"Bienvenido {st.session_state.user_state['name']}!")
+        st.success(f"¡Bienvenido {st.session_state.user_state['name']}!")
 
         uploaded_files = st.file_uploader("Cargar archivos Excel", type="xlsx", accept_multiple_files=True)
 
