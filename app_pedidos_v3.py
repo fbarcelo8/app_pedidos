@@ -237,6 +237,7 @@ def main():
 
     users = load_users()
 
+    # Login Section
     if not st.session_state.user_state['logged_in']:
         aplicar_imagenes_y_formato()
         st.markdown('## Procesamiento de Pedidos')
@@ -251,9 +252,11 @@ def main():
                 st.session_state.user_state['logged_in'] = True
                 st.session_state.user_state['username'] = username
                 st.session_state.user_state['name'] = user_info['name']
-                st.rerun()
+                st.rerun()  # Recarga la página después del login
             else:
                 st.warning('Usuario / contraseña incorrecto')
+
+    # Main Content for Logged-in Users
     else:
         aplicar_imagenes_y_formato()
         st.title("Procesamiento de Pedidos")
@@ -269,6 +272,7 @@ def main():
                 if st.button("Eliminar todos"):
                     # Reiniciar el file_uploader al actualizar la clave
                     st.session_state.file_uploader_key += 1
+                    st.rerun()  # Forzar la recarga después de eliminar todos los archivos
 
         # Mostrar el botón "Procesar archivos" solo si hay archivos cargados
         if uploaded_files:
@@ -291,6 +295,7 @@ def main():
             logout_user()
             st.session_state.user_state['logged_in'] = False
             st.session_state.file_uploader_key += 1  # Resetea el uploader al cerrar sesión
+            st.rerun()  # Forzar la recarga después de cerrar sesión
 
 if __name__ == "__main__":
     main()
