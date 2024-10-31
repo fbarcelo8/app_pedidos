@@ -231,6 +231,10 @@ def main():
             'logged_in': False
         }
 
+    # Inicializa la clave `file_uploader_key`
+    if 'file_uploader_key' not in st.session_state:
+        st.session_state.file_uploader_key = 0  # Clave para reiniciar el file_uploader
+
     users = load_users()
 
     if not st.session_state.user_state['logged_in']:
@@ -246,8 +250,7 @@ def main():
             if user_info and user_info["password"] == password:
                 st.session_state.user_state['logged_in'] = True
                 st.session_state.user_state['username'] = username
-                st.session_state.user_state['name'] = user_info['name']  # Almacenar el nombre completo
-                st.rerun()
+                st.session_state.user_state['name'] = user_info['name']
             else:
                 st.warning('Usuario / contraseña incorrecto')
     else:
@@ -255,27 +258,38 @@ def main():
         st.title("Procesamiento de Pedidos")
         st.success(f"¡Bienvenido {st.session_state.user_state['name']}!")
 
-        uploaded_files = st.file_uploader("Cargar archivos Excel", type="xlsx", accept_multiple_files=True)
+        # Cargar archivos usando `file_uploader_key`
+        uploaded_files = st.file_uploader("Cargar archivos Excel", type="xlsx", accept_multiple_files=True, key=st.session_state.file_uploader_key)
 
-        if uploaded_files and st.button("Procesar archivos"):
-            with st.spinner('Procesando...'):
-                fecha_hoy = datetime.now().strftime('%Y-%m-%d')
-                output, codigo_almacen = crear_archivo_excel_en_memoria(uploaded_files)
-                if output:
-                    st.success(f"Archivos procesados correctamente")
-                    st.download_button(
-                        label="Descargar archivo Excel",
-                        data=output.getvalue(),
-                        file_name=f"pedidos_{codigo_almacen}_{fecha_hoy}.xlsx",
-                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    )
-                else:
-                    st.error("Error al procesar los archivos.")
+        # Mostrar botón "Eliminar todos" solo si hay archivos cargados
+        if uploaded_files:
+            col1, col2 = st.columns([0.8, 0.2])
+            with col2:
+                if st.button("Eliminar todos"):
+                    # Reiniciar el file_uploader al actualizar la clave
+                    st.session_state.file_uploader_key += 1
+
+        # Mostrar el botón "Procesar archivos" solo si hay archivos cargados
+        if uploaded_files:
+            if st.button("Procesar archivos"):
+                with st.spinner('Procesando...'):
+                    fecha_hoy = datetime.now().strftime('%Y-%m-%d')
+                    output, codigo_almacen = crear_archivo_excel_en_memoria(uploaded_files)
+                    if output:
+                        st.success("Archivos procesados correctamente")
+                        st.download_button(
+                            label="Descargar archivo Excel",
+                            data=output.getvalue(),
+                            file_name=f"pedidos_{codigo_almacen}_{fecha_hoy}.xlsx",
+                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        )
+                    else:
+                        st.error("Error al procesar los archivos.")
 
         if st.button('Cerrar sesión'):
             logout_user()
             st.session_state.user_state['logged_in'] = False
-            st.rerun()
+            st.session_state.file_uploader_key += 1  # Resetea el uploader al cerrar sesión
 
 if __name__ == "__main__":
     main()
