@@ -251,6 +251,7 @@ def main():
                 st.session_state.user_state['logged_in'] = True
                 st.session_state.user_state['username'] = username
                 st.session_state.user_state['name'] = user_info['name']
+                st.rerun()
             else:
                 st.warning('Usuario / contraseña incorrecto')
     else:
